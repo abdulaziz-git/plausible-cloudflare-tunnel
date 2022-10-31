@@ -38,6 +38,21 @@ services:
     env_file:
       - plausible-conf.env
 
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: always
+    container_name: cloudflared
+    user: root
+    entrypoint: cloudflared tunnel --no-autoupdate run --token $CLOUDFLARED_TOKEN
+    depends_on:
+    - plausible
+    volumes:
+    - ${PWD}/cloudflared:/etc/cloudflared:ro
+    environment:
+    - CLOUDFLARED_TOKEN
+    # env_file:
+    #   - cf.env
+
 volumes:
   db-data:
     driver: local
